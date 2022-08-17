@@ -13,7 +13,8 @@
 
 @implementation ViewController
 
-static void (^(^(^(^(^array_pointer_test)(const unsigned int))(CFTypeRef(^)(void)))(void(^)(CFTypeRef)))(CFTypeRef(^)(CFTypeRef)))(bool(^)(CFTypeRef)) = ^ (unsigned int object_count) {
+typedef typeof(void (^(^(^(^(^)(typeof(void (^(^(^(^(^*)(const unsigned int))(CFTypeRef(^)(void)))(void(^)(CFTypeRef)))(CFTypeRef(^)(CFTypeRef)))(bool(^)(CFTypeRef))), const unsigned int))(CFTypeRef(^)(void)))(void(^)(CFTypeRef)))(CFTypeRef(^)(CFTypeRef)))(bool(^)(CFTypeRef))) array_pointer_test_ref;
+array_pointer_test_ref array_pointer_test = ^ (typeof(void (^(^(^(^(^*)(const unsigned int))(CFTypeRef(^)(void)))(void(^)(CFTypeRef)))(CFTypeRef(^)(CFTypeRef)))(bool(^)(CFTypeRef))) arp_t, unsigned int object_count) {
     typedef CFTypeRef objects[object_count];
     typeof(objects) objects_ptr[object_count];
     __block unsigned long (^recursive_block)(unsigned long);
@@ -38,10 +39,10 @@ static void (^(^(^(^(^array_pointer_test)(const unsigned int))(CFTypeRef(^)(void
                         *((CFTypeRef *)objects_t + index) = CFBridgingRetain((__bridge id _Nullable)(modify_object((*((CFTypeRef *)objects_t + index)))));
                         printf("modified_number = %lu\n", [(NSNumber *)((__bridge id)(*((CFTypeRef *)objects_t + index))) unsignedLongValue]);
                     }
+                    // To-Do: Consider returning a new array_pointer_test reference (which should take a pointer and assign itself as its reference; the reference can be re-pointed to a new call (reuse the initializer block in this case); that would allow object_count to be reset and would free unused memory)
                     return ^ (bool(^filter_object)(CFTypeRef)) {
                         for (unsigned int index = 0; index < object_count; index++) {
                             CFTypeRef subject_object = (*((CFTypeRef *)objects_t + index));
-                            // To-Do: Either nil the array or create a new one
                             *objects_t = nil;
                             !(!filter_object(subject_object)) ?: ^{ printf("number %lu is even\n", [(__bridge NSNumber *)subject_object unsignedLongValue]); (*((CFTypeRef *)objects_t + index) = CFBridgingRetain((__bridge id _Nullable)(subject_object))); }();
                         }
@@ -66,7 +67,8 @@ static void (^(^(^(^(^array_pointer_test)(const unsigned int))(CFTypeRef(^)(void
     
     
     __block int c = 0;
-    array_pointer_test(10)(^ CFTypeRef {
+    array_pointer_test_ref number_array_pointer_test = array_pointer_test;
+    number_array_pointer_test(&number_array_pointer_test, 10)(^ CFTypeRef {
         __block NSNumber * number = [[NSNumber alloc] initWithUnsignedLong:c++];
         printf("Sent number_write == %lu\n", [number unsignedLongValue]);
         return (__bridge CFTypeRef)(number);
