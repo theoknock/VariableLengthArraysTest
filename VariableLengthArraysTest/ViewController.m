@@ -42,6 +42,7 @@ static void (^(^(^(^(^array_pointer_test)(const unsigned int))(CFTypeRef(^)(void
                         for (unsigned int index = 0; index < object_count; index++) {
                             CFTypeRef subject_object = (*((CFTypeRef *)objects_t + index));
                             // To-Do: Either nil the array or create a new one
+                            *objects_t = nil;
                             !(!filter_object(subject_object)) ?: ^{ printf("number %lu is even\n", [(__bridge NSNumber *)subject_object unsignedLongValue]); (*((CFTypeRef *)objects_t + index) = CFBridgingRetain((__bridge id _Nullable)(subject_object))); }();
                         }
                     };
